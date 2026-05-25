@@ -1,0 +1,15 @@
+{
+  "short_name": "Pokédex Battle",
+  "name": "Pokédex Battle — análise de matchups",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#0a0a1a",
+  "background_color": "#0a0a1a"
+}
