@@ -18,23 +18,77 @@ A análise de força (funcionalidade principal) está preparada para consumir um
 - **Pokédex** (rota `/pokedex`): lista paginada de Pokémon.
 - **Picker com busca**: é possível buscar qualquer Pokémon por nome diretamente na PokéAPI.
 
-## Como rodar
+## Como rodar o projeto completo (back + front)
+
+O projeto tem duas partes que rodam ao mesmo tempo, cada uma no seu próprio terminal:
+
+- **Back-end** (Flask + modelos de ML) — pasta raiz `iml-front/`
+- **Front-end** (React) — pasta `iml-front/pokedex-front/`
+
+### Pré-requisitos
+
+- **Python 3** 
+- **Node.js** (verifique com `node -v`)
+
+### Terminal 1 — Back-end (Flask + ML)
 
 ```bash
-cd pokedex-battle
-npm install
+cd ~/Desktop/iml-front
+source venv/bin/activate
+python app.py
+```
+
+Você deve ver:
+
+```
+--- Carregando modelos treinados em memória ---
+Modelos prontos para receber requisições do React!
+ * Running on http://127.0.0.1:5000
+```
+
+> **Primeira vez numa máquina nova** (ou se o `venv/` não existir): rode antes
+>
+> ```bash
+> python3 -m venv venv
+> source venv/bin/activate
+> pip install -r requirements.txt
+> python pipeline_ml.py    # treina e salva os modelos em modelos_treinados/
+> ```
+
+### Terminal 2 — Front-end (React)
+
+Abra um **segundo terminal** (não feche o primeiro):
+
+```bash
+cd ~/Desktop/iml-front/pokedex-front
+npm install        # só na primeira vez (ou se package.json mudar)
 npm start
 ```
 
-A aplicação sobe em `http://localhost:3000`.
+A aplicação sobe em `http://localhost:3000` e abre automaticamente no navegador.
 
-Para gerar o build de produção:
+### Para parar tudo
+
+Em cada terminal, aperte **`Ctrl + C`**. Para sair do ambiente virtual no Terminal 1: `deactivate`.
+
+### Build de produção (front)
 
 ```bash
 npm run build
 ```
 
 Os arquivos finais ficam em `build/`.
+
+### Troubleshooting
+
+| Problema | Solução |
+| --- | --- |
+| `ModuleNotFoundError: No module named 'pandas'` | Esqueceu de `source venv/bin/activate` antes do `python app.py` |
+| `Port 5000 already in use` | `lsof -ti :5000 \| xargs kill` |
+| `Port 3000 already in use` | `lsof -ti :3000 \| xargs kill` |
+| `AttributeError: 'LogisticRegression' object has no attribute 'multi_class'` | Modelos `.pkl` estão em versão incompatível. Rode `python pipeline_ml.py` para retreinar |
+| CORS error no navegador | Quase sempre é um 500 disfarçado. Olhe o **Terminal 1** para ver o erro real do Flask |
+| Mudou algum `.pkl` mas o erro persiste | Pare o Flask (Ctrl+C) e suba de novo — ele não recarrega automaticamente os modelos |
 
 ## Variáveis de ambiente
 
@@ -44,10 +98,10 @@ Copie o arquivo `.env.example` para `.env` e ajuste se necessário:
 cp .env.example .env
 ```
 
-| Variável                  | Padrão                   | Descrição                                                          |
-| ------------------------- | ------------------------ | ------------------------------------------------------------------ |
-| `REACT_APP_BACKEND_URL`   | `http://localhost:3001`  | URL base do backend que fará a análise de matchups.                |
-| `REACT_APP_USE_MOCK`      | `true`                   | Se `true`, usa o mock local. Defina como `false` para usar backend. |
+| Variável                  | Padrão                       | Descrição                                                           |
+| ------------------------- | ---------------------------- | ------------------------------------------------------------------- |
+| `REACT_APP_BACKEND_URL`   | `http://127.0.0.1:5000`      | URL base do backend Flask que faz a análise de matchups.            |
+| `REACT_APP_USE_MOCK`      | `true`                       | Se `true`, usa o mock local. Defina como `false` para usar o backend. |
 
 > Variáveis precisam começar com `REACT_APP_` para serem expostas no bundle do CRA. Após alterar o `.env`, reinicie o `npm start`.
 
