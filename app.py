@@ -29,7 +29,6 @@ print("Modelos prontos para receber requisições do React!")
 
 @app.route('/battle/matchups', methods=['POST'])
 def battle_matchups():
-
     # Recebe os dados vindos do front-end
     dados = request.get_json()
     nome_pokemon = dados.get('pokemon', {}).get('name')
@@ -39,16 +38,18 @@ def battle_matchups():
     df_pk = limpar_dados_pokemon()
     nome_pokemon = nome_pokemon.title()
 
-    if nome_pokemon not in df_pk['Pokemon'].values:
-        return jsonify({"error": "Pokémon não encontrado"}), 404
+    # if nome_pokemon not in df_pk['Pokemon'].values:
+    #     return jsonify({"error": "Pokémon não encontrado"}), 404
     
     meu_pk = df_pk[df_pk['Pokemon'] == nome_pokemon].iloc[0]
-    
+
     lista_predicoes = []
-
+    
+    # Comparar contra todos os outros Pokémons do jogo
     for _, oponente in df_pk.iterrows():
-        if oponente['Pokemon'] == meu_pk['Pokemon']: continue
-
+        if oponente['Pokemon'] == meu_pk['Pokemon']:
+            continue
+            
         # Calcula a vantagem que o meu Pokémon tem contra o oponente
         eff_meu = max(get_effectiveness(meu_pk['Type1'], oponente['Type1'], oponente['Type2']),
                       get_effectiveness(meu_pk['Type2'], oponente['Type1'], oponente['Type2']))
@@ -66,7 +67,7 @@ def battle_matchups():
             'Vantagem_Tipo_P1': eff_meu,
             'Vantagem_Tipo_P2': eff_opo
         }])
-
+        
         # GARANTIA: Forçar a mesma ordem de colunas usada no treinamento
         features_combate = features_combate[colunas_X]
         
@@ -79,29 +80,40 @@ def battle_matchups():
         prob_nn = model_nn.predict_proba(features_scaled)[0][1]  # Rede Neural
 
         lista_predicoes.append({
-            "opponent": {
-                "name": oponente['Pokemon'].lower(), # React costuma usar minúsculo
-                "types": [oponente['Type1'], oponente['Type2']] if pd.notna(oponente['Type2']) else [oponente['Type1']]
+            'opponent': {
+                'name': oponente['Pokemon'],
+                'types': oponente['Type'].split(',')
             },
-            "winRate": int(prob_rf * 100), # Manda em formato de porcentagem inteira para o slider
-            "chanceLR": int(prob_lr * 100),
-            "chanceNN": int(prob_nn * 100),
-            "xpReward": int(oponente['Base Exp'])
+            
+            'Chance_RF': round(prob_rf * 100, 1),
+            'Chance_LR': round(prob_lr * 100, 1),
+            'Chance_NN': round(prob_nn * 100, 1),
+            'XP_Recompensa': oponente['Base Exp']
         })
-
-    # 3. Filtra com base no slider dinâmico do front-end
-    df_resultados = pd.DataFrame(lista_predicoes)
-    # Filtra usando o valor dinâmico que veio do 'minWinRate' do React!
-    df_filtrado = df_resultados[df_resultados['winRate'] >= (min_win_rate * 100)]
-    df_ranking = df_filtrado.sort_values(by='xpReward', ascending=False).head(limit)
-
-    # 4. Devolve a resposta estruturada em JSON para o React ler no MatchupList
-    resposta = {
-        "pokemon": {"name": nome_pokemon},
-        "likelyWins": df_ranking.to_dict(orient='records')
-    }
         
+    df_resultados = pd.DataFrame(lista_predicoes)
+
+    df_seguro = df_resultados[df_resultados['Chance_RF'] >= 0.85]
+
+    
+    df_ranking = df_seguro.sort_values(by='Chance_RF', ascending=False).head(limit)
+
+    print(df_ranking)
+
+    lista_final = df_ranking[['opponent', 'Chance_RF', 'Chance_LR', 'Chance_NN', 'XP_Recompensa']].to_dict(orient='records')
+
+    resposta = {
+        "pokemon": {
+            "name": nome_pokemon
+        },
+        # "totalEvaluated": total_avaliados,  
+        "likelyWins": lista_final
+    }
+    
+    print(resposta)
     return jsonify(resposta)
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+    
