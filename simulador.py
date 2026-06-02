@@ -22,7 +22,7 @@ def simular_batalha(p1, p2):
         eff = max(get_effectiveness(primeiro['Type1'], segundo['Type1'], segundo['Type2']),
                   get_effectiveness(primeiro['Type2'], segundo['Type1'], segundo['Type2']))
         
-        # Fórmula de Dano corrigida para usar estritamente os status Max
+        # Fórmula de Dano usando os status Max
         dano = (((2 * 100 / 5 + 2) * 60 * (primeiro['Attack Max'] / segundo['Defense Max'])) / 50 + 2) * eff
         hp2 -= max(1, dano)
         if hp2 <= 0:
