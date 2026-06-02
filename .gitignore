@@ -35,8 +35,4 @@ pnpm-debug.log*
 *.sln
 *.sw?
 
-# Resultados da Avaliação (gerados automaticamente)
-avaliacao/resultados/*.csv
-avaliacao/resultados/*.txt
-avaliacao/resultados/*.html
-avaliacao/resultados/*.png
+# Resultados da Avaliação agora são versionados para documentação
