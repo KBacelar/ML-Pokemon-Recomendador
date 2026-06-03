@@ -36,7 +36,7 @@ print("--- Treinando Regressão Logística ---")
 model_lr = LogisticRegression(max_iter=1000)
 model_lr.fit(X_train, y_train)
 
-# Predição
+# Predição Regressão Logística
 y_pred_lr = model_lr.predict(X_test)
 
 print("--- Treinando Random Forest com GridSearchCV ---")
@@ -58,7 +58,7 @@ grid_search.fit(X_train, y_train)
 model_rf = grid_search.best_estimator_
 print(f"Melhores parâmetros encontrados: {grid_search.best_params_}")
 
-# Predição
+# Predição Random Forest
 y_pred_rf = model_rf.predict(X_test)
 
 print("--- Treinando Rede Neural (MLPClassifier) ---")
@@ -70,12 +70,12 @@ X_test_scaled = scaler.transform(X_test)
 model_nn = MLPClassifier(hidden_layer_sizes=(100, 50), max_iter=1000, random_state=42)
 model_nn.fit(X_train_scaled, y_train)
 
-# 3. Predição
+# Predição MPL
 y_pred_nn = model_nn.predict(X_test_scaled)
 
 import pickle
 
-# Criar a pasta para salvar os modelos se ela não existir
+# Criar a pasta para salvar os modelos
 os.makedirs('modelos_treinados', exist_ok=True)
 
 print("--- Salvando modelos treinados em disco ---")

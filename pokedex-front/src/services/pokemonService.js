@@ -21,7 +21,7 @@ const TYPE_COLORS = {
   fairy: '#D685AD',
 };
 
-export const getTypeColor = (type) => TYPE_COLORS[type] || '#777';
+export const getTypeColor = (type) => TYPE_COLORS[type.toLowerCase()] || '#777';
 
 const mapPokemon = (data) => ({
   id: data.id,

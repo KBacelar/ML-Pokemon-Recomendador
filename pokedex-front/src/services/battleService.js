@@ -44,7 +44,7 @@ async function mockMatchups(pokemon, { minWinRate = 50, limit = 20 } = {}) {
     .slice(0, limit);
 
   return {
-    pokemon: { id: pokemon.id, name: pokemon.name },
+    pokemon: { name: pokemon.name },
     power: myPower,
     totalEvaluated: pool.length - 1,
     likelyWins: matchups,
@@ -59,14 +59,16 @@ export async function fetchMatchups(pokemon, options = {}) {
   }
 
   try {
+    console.log(`[battleService] buscando matchups para ${pokemon.name} no backend...`);
     const { data } = await backendApi.post('/battle/matchups', {
-      pokemon: { id: pokemon.id, name: pokemon.name },
+      pokemon: { name: pokemon.name },
       minWinRate: options.minWinRate ?? 50,
       limit: options.limit ?? 20,
     });
     return { ...data, source: 'backend' };
   } catch (err) {
     console.warn('[battleService] backend indisponível, usando mock:', err.message);
-    return mockMatchups(pokemon, options);
+    return [];
+  //   return mockMatchups(pokemon, options);
   }
 }
