@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import PokemonCard from './PokemonCard';
-import { getPokemonList, getPokemonByName } from '../services/pokemonService';
-import './PokemonPicker.css';
+import { useEffect, useState } from "react";
+import PokemonCard from "./PokemonCard";
+import { getPokemonList, getPokemonByName } from "../services/pokemonService";
+import "./PokemonPicker.css";
 
 const PAGE_SIZE = 24;
 
@@ -10,37 +10,32 @@ export default function PokemonPicker({ open, onClose, onSelect, title }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(0);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
-  // Efeito para gerenciar a busca: decide se pagina ou se busca globalmente
   useEffect(() => {
     if (!open) return;
-    
+
     let cancelled = false;
     setLoading(true);
     setError(null);
 
     const term = search.trim().toLowerCase();
 
-    // CASO 1: Tem texto na barra de busca -> Faz busca global por nome
     if (term) {
       getPokemonByName(term)
         .then((p) => {
           if (!cancelled) {
-            // Envelopamos o pokémon único em um array para o .map do grid continuar funcionando
-            setPokemons([p]); 
+            setPokemons([p]);
           }
         })
         .catch(() => {
           if (!cancelled) {
-            setPokemons([]); // Limpa a lista visual
+            setPokemons([]);
             setError(`Pokémon "${search}" não encontrado na base de dados.`);
           }
         })
         .finally(() => !cancelled && setLoading(false));
-    } 
-    // CASO 2: A barra está vazia -> Volta a funcionar a paginação normal de 24 em 24
-    else {
+    } else {
       getPokemonList(PAGE_SIZE, page * PAGE_SIZE)
         .then((res) => {
           if (!cancelled) setPokemons(res.results);
@@ -60,11 +55,16 @@ export default function PokemonPicker({ open, onClose, onSelect, title }) {
     <div className="picker-backdrop" onClick={onClose}>
       <div className="picker" onClick={(e) => e.stopPropagation()}>
         <div className="picker__header">
-          <h2>{title || 'Escolher Pokémon'}</h2>
-          <button className="picker__close" onClick={onClose} aria-label="fechar">×</button>
+          <h2>{title || "Escolher Pokémon"}</h2>
+          <button
+            className="picker__close"
+            onClick={onClose}
+            aria-label="fechar"
+          >
+            ×
+          </button>
         </div>
 
-        {/* Removido o onSubmit complexo, agora a busca responde direto ao digitar */}
         <div className="picker__search">
           <input
             type="text"
@@ -80,8 +80,10 @@ export default function PokemonPicker({ open, onClose, onSelect, title }) {
         {error && <div className="picker__error">{error}</div>}
 
         <div className="picker__grid">
-          {loading && <div className="picker__loading">Buscando na Pokédex...</div>}
-          
+          {loading && (
+            <div className="picker__loading">Buscando na Pokédex...</div>
+          )}
+
           {!loading &&
             pokemons.map((p) => (
               <PokemonCard
@@ -94,16 +96,18 @@ export default function PokemonPicker({ open, onClose, onSelect, title }) {
                 }}
               />
             ))}
-            
+
           {!loading && pokemons.length === 0 && !error && (
             <div className="picker__loading">Nenhum pokémon encontrado.</div>
           )}
         </div>
 
-        {/* Só exibe os botões de paginação se o usuário NÃO estiver buscando algo específico */}
         {!search.trim() && (
           <div className="picker__pagination">
-            <button onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={page === 0 || loading}>
+            <button
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
+              disabled={page === 0 || loading}
+            >
               ← Anterior
             </button>
             <span>Página {page + 1}</span>
