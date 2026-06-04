@@ -65,6 +65,7 @@ export async function fetchMatchups(pokemon, options = {}) {
       minWinRate: options.minWinRate ?? 50,
       limit: options.limit ?? 20,
     });
+    console.log('data', data);
     return { ...data, source: 'backend' };
   } catch (err) {
     console.warn('[battleService] backend indisponível, usando mock:', err.message);

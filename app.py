@@ -1,6 +1,6 @@
 import pickle
 import pandas as pd
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from dados_processados import limpar_dados_pokemon  # Suas funções do projeto
 from utils import get_effectiveness
@@ -26,6 +26,10 @@ with open('modelos_treinados/colunas_X.pkl', 'rb') as f:
     colunas_X = pickle.load(f)
 
 print("Modelos prontos para receber requisições do React!")
+
+@app.route('/dados/pokemon_img/<path:filename>', methods=['GET'])
+def serve_pokemon_img(filename):
+    return send_from_directory('dados/pokemon_img', filename)
 
 @app.route('/battle/matchups', methods=['POST'])
 def battle_matchups():
