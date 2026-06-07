@@ -92,11 +92,14 @@
 
 % --- Resumo ---
 \begin{abstract}
-\noindent Este trabalho apresenta o desenvolvimento de um pipeline completo de Aprendizado de Máquina voltado à modelagem preditiva de combates e à formulação de um sistema de recomendação focado na otimização do ganho de pontos de Experiência (XP). Tomando como base o ecossistema competitivo da franquia Pokémon, o projeto utiliza algoritmos de classificação supervisionada para identificar oponentes que combinem vulnerabilidade matemática e alta rentabilidade de treino. A base de dados foi gerada a partir de um motor de batalhas determinístico em nível máximo (Level 100), consolidando um dataset sintético contendo 10.000 confrontos. O pipeline abrange desde o pré-processamento estruturado e engenharia de atributos — transformando relações elementares de tipos em features contínuas — até o ajuste fino de hiperparâmetros por validação cruzada exaustiva via \textit{GridSearchCV}. Três arquiteturas preditivas foram avaliadas e contrastadas: Regressão Logística, \textit{Random Forest} e \textit{Multi-Layer Perceptron} (MLP). Como produto final, implementou-se um algoritmo recomendador para \textit{"Farming Seguro"}, capaz de filtrar adversários e ranqueá-los de modo a garantir uma probabilidade de vitória superior a 85\%, articulando conceitos práticos de viés algorítmico, eficiência e capacidade de generalização.
-\\
+\noindent Este trabalho apresenta o desenvolvimento de um pipeline completo de Aprendizado de Máquina voltado à modelagem preditiva de combates e à formulação de um sistema de recomendação focado na otimização do ganho de pontos de Experiência (XP). Tomando como base o ecossistema competitivo da franquia Pokémon, o projeto utiliza algoritmos de classificação supervisionada para identificar oponentes que combinem vulnerabilidade matemática e alta rentabilidade de treino. A base de dados foi gerada a partir de um motor de batalhas determinístico em nível máximo (Level 100), consolidando um dataset sintético contendo 10.000 confrontos. O pipeline abrange desde o pré-processamento estruturado e engenharia de atributos — transformando relações elementares de tipos em features contínuas — até o ajuste fino de hiperparâmetros por validação cruzada exaustiva via \textit{GridSearchCV}. Três arquiteturas preditivas foram avaliadas e contrastadas: Regressão Logística, \textit{Random Forest} e \textit{Multi-Layer Perceptron} (MLP). Como produto final, implementou-se um algoritmo recomendador para \textit{"Farming Seguro"}, capaz de filtrar adversários e ranqueá-los com base em um limiar dinâmico de probabilidade de vitória customizado pelo utilizador (configurável a partir de 50\%), articulando conceitos práticos de viés algorítmico, eficiência e capacidade de generalização.
+
+\medskip
 
 \noindent \textbf{Palavras-chave:} Aprendizado de Máquina, Sistema de Recomendação, Regressão Logística, Pokémon, Otimização de Processos.
 \end{abstract}
+
+\newpage
 
 \newpage
 
