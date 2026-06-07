@@ -1,0 +1,207 @@
+\documentclass[12pt, a4paper]{article}
+
+% --- Pacotes Fundamentais ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% --- Configuração das Margens (Baseado no modelo fornecido) ---
+\geometry{
+    left=3cm,
+    right=2cm,
+    top=3cm,
+    bottom=2cm
+}
+
+% --- Configuração de Cores para Código ---
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+% --- Configuração de Espaçamento ---
+\setstretch{1.5}
+
+\begin{document}
+
+% --- Folha de Rosto Personalizada com a Nova Estrutura ---
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+        
+        % Logo da UFRJ no caminho especificado
+        \includegraphics[width=0.6\textwidth]{C:/Users/leona/Downloads/ufrj-horizontal-cor-rgb-telas.png}
+        
+        \vspace*{2.5cm}
+        
+        {\Large \bfseries Relatório do Trabalho Final} \\
+        {\large \bfseries Introdução a Machine Learning}
+        
+        \vspace*{1.5cm}
+        
+        {\LARGE \bfseries Otimização de Farming em RPGs com Aprendizado de Máquina: Um Sistema de Recomendação para Maximização no Ganho De Experiência em Pokémon}
+        
+        \vspace*{2cm}
+        {\large \bfseries Autores:} \\
+        {\large Giovanna Oliveira da Silva} \\
+        {\large Kayo Bacelar de Oliveira} \\
+        {\large Rodrigo da Silva Nogueira} \\
+        {\large Leonardo Ambrus de Lima} \\
+        {\large Isabella Vitoria da Silva Raymundo}
+        
+        \vfill
+        
+        {\large \today}
+        
+    \end{center}
+\end{titlepage}
+
+\newpage
+
+% --- Resumo ---
+\begin{abstract}
+\noindent Este trabalho apresenta o desenvolvimento de um pipeline completo de Aprendizado de Máquina voltado à modelagem preditiva de combates e à formulação de um sistema de recomendação focado na otimização do ganho de pontos de Experiência (XP). Tomando como base o ecossistema competitivo da franquia Pokémon, o projeto utiliza algoritmos de classificação supervisionada para identificar oponentes que combinem vulnerabilidade matemática e alta rentabilidade de treino. A base de dados foi gerada a partir de um motor de batalhas determinístico em nível máximo (Level 100), consolidando um dataset sintético contendo 10.000 confrontos. O pipeline abrange desde o pré-processamento estruturado e engenharia de atributos — transformando relações elementares de tipos em features contínuas — até o ajuste fino de hiperparâmetros por validação cruzada exaustiva via \textit{GridSearchCV}. Três arquiteturas preditivas foram avaliadas e contrastadas: Regressão Logística, \textit{Random Forest} e \textit{Multi-Layer Perceptron} (MLP). Como produto final, implementou-se um algoritmo recomendador para \textit{"Farming Seguro"}, capaz de filtrar adversários e ranqueá-los de modo a garantir uma probabilidade de vitória superior a 85\%, articulando conceitos práticos de viés algorítmico, eficiência e capacidade de generalização.
+\\
+
+\noindent \textbf{Palavras-chave:} Aprendizado de Máquina, Sistema de Recomendação, Regressão Logística, Pokémon, Otimização de Processos.
+\end{abstract}
+
+\newpage
+
+% --- Seções do Relatório ---
+\section{Introdução}
+
+Nos jogos de interpretação de papéis (\textit{Role-Playing Games} - RPGs), o progresso de um personagem está intrinsecamente atrelado à aquisição contínua de pontos de Experiência (XP). Esse processo de acumulação, popularmente denominado \textit{"farming"} ou \textit{"grinding"}, frequentemente exige que o jogador enfrente uma sequência repetitiva de combates para elevar os atributos de suas unidades. Na franquia Pokémon, esse cenário ganha contornos complexos devido ao vasto arranjo de variáveis envolvidas nas dinâmicas de combate, tais como vantagens elementares de tipos, distribuição de estatísticas base, golpes disponíveis e níveis dos oponentes. Maximizar a eficiência dessa rotina consiste em encontrar oponentes que cedam grandes quantidades de experiência, mas que minimizem o risco de derrota ou o desgaste excessivo da equipe do jogador.
+
+Diante desse cenário, este trabalho propõe a aplicação de técnicas de Aprendizado de Máquina Supervisionado para mapear e mitigar os riscos associados ao \textit{farming}. O objetivo central é estruturar um ecossistema inteligente de dados e modelagem preditiva capaz de prever o desfecho de batalhas e atuar ativamente como um sistema de recomendação de alvos ótimos para o treinamento de personagens específicos.
+
+A abordagem metodológica compreende a engenharia de um motor de batalhas determinístico, parametrizado sob as regras de combates competitivos de nível máximo (Level 100), utilizado para confeccionar uma base de dados robusta contendo 10.000 simulações de confrontos. A partir deste repositório sintético, o pipeline de Ciência de Dados executa o tratamento de atributos categóricos e a conversão de multiplicadores de vantagens elementares em variáveis contínuas adequadas para o consumo de modelos estatísticos.
+
+Com a finalidade de estabelecer contrastes arquitetônicos e avaliar o impacto da complexidade dos modelos na tarefa de classificação binária (Vitória versus Derrota), o projeto implementa e compara três classificadores distintos:
+\begin{itemize}
+    \item \textbf{Regressão Logística:} Utilizada como \textit{baseline} linear para quantificar a separabilidade básica do espaço amostral;
+    \item \textbf{\textit{Random Forest}:} Abordagem baseada em comitês de árvores de decisão para capturar interações não lineares e regras de corte abruptas nas \textit{features}. Devido à ampla variedade de hiperparâmetros desta arquitetura (como quantidade e profundidade máxima das árvores), utilizou-se o método exaustivo \textit{GridSearchCV} combinado com validação cruzada para avaliar automaticamente as combinações estruturais e selecionar a configuração de melhor desempenho;
+    \item \textbf{\textit{Multi-Layer Perceptron} (MLP):} Arquitetura de rede neural artificial para avaliar a aproximação de fronteiras complexas de decisão através de camadas ocultas.
+\end{itemize}
+
+Por fim, as saídas probabilísticas calculadas pelos modelos servem de fundação para o desenvolvimento de um algoritmo recomendador interativo. Em vez de adotar um patamar estático de corte, o sistema permite que o usuário gerencie dinamicamente sua tolerância ao risco através da interface, estipulando a probabilidade mínima de vitória desejada para a filtragem de alvos (com limites configuráveis a partir de 50\%). O mecanismo então filtra e ranqueia os potenciais oponentes em tempo real, exibindo os adversários mais rentáveis em ganho de XP que atendam ao critério definido, traduzindo os conceitos de generalização matemática discutidos no âmbito acadêmico em uma ferramenta aplicada de tomada de decisão.
+
+
+\section{Ferramentas e Justificativas}
+
+A construção do ecossistema computacional deste projeto foi pautada na escolha de tecnologias consagradas no mercado e na academia, visando garantir reprodutibilidade, eficiência no tratamento de dados e uma experiência de uso fluida. Esta seção detalha as ferramentas utilizadas, divididas entre o ambiente de processamento e modelagem e a infraestrutura de serviços e interface.
+
+\subsection{Scripts Executados e Modelagem de Aprendizado de Máquina}
+
+O núcleo de processamento de dados e inteligência preditiva foi desenvolvido inteiramente na linguagem \textit{Python} (versão 3.14), utilizando um conjunto de scripts modulares estruturados para compor o pipeline de Ciência de Dados:
+
+\begin{itemize}
+    \item \textbf{Processamento e Limpeza de Dados (\texttt{dados\_processados.py}):} Utilizou-se a biblioteca \textit{Pandas} para manipulação de dados tabulares. Esta etapa foi indispensável para o tratamento do \textit{dataset} bruto do banco de dados Pokémon, extraindo numericamente os identificadores de \textit{Base Exp} e \textit{Catch Rate} via expressões regulares, preenchendo valores ausentes com médias amostrais e segmentando strings complexas de tipos elementares em variáveis normalizadas.
+    
+    \item \textbf{Geração de Dados Sintéticos (\texttt{simulador.py} e \texttt{utils.py}):} Devido à ausência de históricos públicos de confrontos detalhados, foi construído um motor de simulação matemática determinístico para gerar 10.000 registros de batalhas. A modelagem optou estritamente pela utilização dos \textit{status} máximos das criaturas (Level 100) em detrimento dos \textit{status} base iniciais (Level 1). Essa decisão justifica-se pelo fato de que os \textit{status} base não refletem fielmente o potencial real de combate de criaturas evoluídas no ecossistema projetado pela \textit{The Pokémon Company}. Instâncias com altíssima resiliência de pontos de vida e capacidade de absorção de dano no nível máximo, como a criatura \textit{Blissey}, exibem atributos de defesa rudimentares e artificialmente baixos no nível inicial (como defesa igual a 10), o que permitiria derrotas matematicamente espúrias para oponentes ofensivos básicos como \textit{Pichu} ou \textit{Pikachu}. Como as taxas de crescimento estatístico escalam de forma assíncrona a cada nível, a simulação no patamar máximo garante a maturidade e a verossimilhança biológica dos atributos. A biblioteca \textit{tqdm} foi integrada para monitoramento do progresso, e os multiplicadores de eficácia foram mapeados em matrizes associativas nativas para computar as variáveis contínuas de vantagem de tipo.
+    
+    \item \textbf{Pipeline de Modelagem Prática (\texttt{pipeline\_ml.py}):} O ecossistema de aprendizado foi estruturado utilizando a biblioteca \textit{Scikit-Learn}. O script realiza a partição do \textit{dataset} simétrico em subconjuntos de treino (80\%) e teste (20\%) através do \textit{train\_test\_split}. Para o pré-processamento exigido por arquiteturas baseadas em gradiente e distância, incorporou-se o \textit{StandardScaler} para a padronização Z-score das características. A otimização de hiperparâmetros utilizou a técnica exaustiva de \textit{GridSearchCV} operando com validação cruzada em 3 \textit{folds} ($cv=3$) para mitigar riscos de sobreajuste (\textit{overfitting}) no modelo de \textit{Random Forest}. 
+    
+    \item \textbf{Persistência de Modelos e Avaliação (\texttt{executar\_avaliacao.py}):} Os modelos validados foram serializados em disco utilizando o módulo \textit{pickle} (gerando arquivos \texttt{.pkl}), permitindo que os coeficientes calibrados da Regressão Logística, as estruturas de decisão do \textit{Random Forest} e os pesos sinápticos da rede neural \textit{Multi-Layer Perceptron} (MLP) fossem reutilizados instantaneamente sem necessidade de retreinamento. Um \textit{wrapper} automatizado foi desenvolvido via módulo \textit{subprocess} para disparar rotinas isoladas de avaliação de métricas.
+\end{itemize}
+
+\subsection{Infraestrutura de Backend e Interface de Frontend}
+
+Para transformar as saídas probabilísticas dos modelos preditivos em uma aplicação útil para o usuário final, foi projetada uma arquitetura desacoplada cliente-servidor (API REST), baseada no documento guia do sistema:
+
+\begin{itemize}
+    \item \textbf{Backend e Disponibilização de Serviços (\texttt{app.py}):} Desenvolvido utilizando o microframework \textit{Flask}. A escolha do Flask justifica-se por sua leveza e excelente integração com o ecossistema de \textit{Data Science} in Python. A API expõe a rota \texttt{/battle/matchups} utilizando o método HTTP POST, recebendo via formato JSON o Pokémon desafiante e a tolerância de risco desejada pelo usuário. O servidor carrega os arquivos binários dos modelos em memória e calcula em tempo real as probabilidades de vitória aplicando o método \texttt{predict\_proba}. A extensão \textit{Flask-CORS} foi acoplada para contornar restrições de segurança de compartilhamento de recursos de origens cruzadas (\textit{Cross-Origin Resource Sharing}), permitindo a comunicação transparente com o servidor cliente.
+    
+    \item \textbf{Frontend e Sistema de Recomendação Interactiva:} Construído em \textit{React 18} utilizando a base de criação \textit{Create React App} (\textit{react-scripts} 5). O framework baseado em componentes foi escolhido para viabilizar uma interface reativa e performática. As requisições assíncronas direcionadas ao backend Flask são gerenciadas pela biblioteca \textit{Axios}. O fluxo operacional da interface consome a API REST para capturar o array de predições, ordená-lo por taxa de sucesso decrescente e renderizar os cards dinâmicos dos oponentes. O comportamento dinâmico é integrado a seletores de limite (\textit{sliders}), filtrando os alvos de acordo com o threshold estipulado pelo jogador para garantir as diretrizes estabelecidas de \textit{"Farming Seguro"}.
+\end{itemize}
+
+
+\section{Fundamentos Teóricos}
+
+Esta seção expõe a fundamentação matemática e estatística dos três algoritmos de aprendizado supervisionado avaliados no pipeline produtivo. As definições seguem os conceitos formais abordados na literatura e nos materiais de suporte da disciplina.
+
+\subsection{Regressão Logística}
+
+A Regressão Logística é o ponto de partida natural para problemas de classificação binária onde a variável resposta assume valores discretos $y \in \{0, 1\}$. Diferente da regressão linear pura, cujo espaço de hipóteses mapeia saídas no intervalo $[-\infty, +\infty]$, o modelo logístico restringe suas predições ao intervalo linear $[0, 1]$, permitindo sua interpretação direta como uma probabilidade condicional $\pi(\mathbf{x}) = P(y=1|\mathbf{x})$.
+
+O modelo reaproveita a estrutura do escore linear $z = \mathbf{x}^\top \boldsymbol{\theta}$ e o submete a uma transformação não linear através da função logística cumulativa, ou função \textit{sigmoid}, definida matematicamente como:
+\begin{equation}
+\pi(\mathbf{x}) = s(\mathbf{x}^\top \boldsymbol{\theta}) = \frac{1}{1 + e^{-\mathbf{x}^\top \boldsymbol{\theta}}}
+\end{equation}
+
+Onde $\boldsymbol{\theta}$ representa o vetor de parâmetros (pesos e bias) a ser calibrado. Como essa formulação não admite uma solução analítica fechada via Mínimos Quadrados Ordinários (OLS), a calibração dos parâmetros é obtida maximizando a função de \textit{Likelihood} de uma distribuição de Bernoulli, o que equivale a minimizar a função de custo convexa denominada \textit{Log-Loss} ou Entropia Cruzada Binária:
+\begin{equation}
+L(\boldsymbol{\theta}) = -\frac{1}{n} \sum_{i=1}^{n} \left[ y^{(i)} \log(\pi(\mathbf{x}^{(i)})) + (1 - y^{(i)}) \log(1 - \pi(\mathbf{x}^{(i)})) \right]
+\end{equation}
+
+A otimização de $L(\boldsymbol{\theta})$ é executada iterativamente por meio do algoritmo do Gradiente Descendente (GD), atualizando-se os pesos na direção oposta ao vetor gradiente analítico:
+\begin{equation}
+\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \alpha \frac{1}{n} \mathbf{X}^\top (\boldsymbol{\pi} - \mathbf{y})
+\end{equation}
+
+\subsection{\textit{Random Forest}}
+
+O classificador \textit{Random Forest} (Floresta Aleatória) baseia-se no princípio de aprendizado por comitês (\textit{Ensemble Learning}), combinando a predição de múltiplas Árvores de Decisão (estruturas do tipo CART) estruturadas de forma independente. O objetivo central desta arquitetura é mitigar o principal ponto fraco das árvores individuais: a alta variância e a propensão ao sobreajuste (\textit{overfitting}).
+
+A construção de cada árvore baseia-se em dois pilares de aleatoriedade:
+\begin{enumerate}
+    \item \textbf{\textit{Bagging} (Bootstrap Aggregation):} Cada árvore da floresta é treinada com uma subamostra distinta dos dados originais, gerada por amostragem aleatória com reposição.
+    \item \textbf{Seleção Aleatória de Atributos (\textit{Feature Subspace}):} Durante a divisão (\textit{split}) de cada nó da árvore, o algoritmo não busca a melhor variável preditora entre todas as disponíveis no \textit{dataset}, mas restringe a busca a um subconjunto aleatório de tamanho pré-fixado m (frequentemente parametrizado como $m = \sqrt{p}$, onde $p$ é o total de atributos).
+\end{enumerate}
+
+O critério de partição dos nós para problemas de classificação baseia-se na minimização da impureza das folhas, comumente mensurada através do Índice de Gini ou da Entropia. O Índice de Gini para um nó $m$ é expresso por:
+\begin{equation}
+H(X_m) = \sum_{k=1}^{K} p_{mk} (1 - p_{mk})
+\end{equation}
+Onde $p_{mk}$ representa a proporção de instâncias da classe $k$ no nó $m$. A predição final da floresta para uma nova instância de teste é consolidada por meio de votação por maioria majoritária (\textit{majority voting}) entre todas as árvores individuais da estrutura.
+
+\subsection{Redes Neurais Artificiais (\textit{Multi-Layer Perceptron} - MLP)}
+
+A arquitetura \textit{Multi-Layer Perceptron} (MLP) é uma rede neural artificial acíclica direcionada (\textit{Feedforward}), composta por uma camada de entrada, uma ou mais camadas ocultas (\textit{hidden layers}) intermediárias e uma camada de saída. Cada camada é constituída por unidades de processamento elementares denominadas neurônios artificiais ou nós.
+
+A computação em um neurônio isolado consiste em aplicar uma transformação linear sobre as saídas da camada anterior, ponderada por um vetor de pesos $\mathbf{w}$ e acrescida de um termo de \textit{bias} $b$, seguida pela aplicação de uma função de ativação não linear $g(\cdot)$. Este processo impede que a rede colapse em um modelo linear equivalente, conferindo-lhe a capacidade de aproximar fronteiras de decisão altamente complexas. O fluxo de propagação para frente (\textit{Forward Propagation}) em um neurônio $j$ pertencente à camada $l$ é descrito como:
+\begin{equation}
+z_j^{[l]} = \sum_{i} w_{ji}^{[l]} a_i^{[l-1]} + b_j^{[l]}
+\end{equation}
+\begin{equation}
+a_j^{[l]} = g(z_j^{[l]})
+\end{equation}
+
+No contexto deste projeto, utilizou-se a função de ativação Unidade Linear Retificada (\textit{ReLU}), definida como $g(z) = \max(0, z)$, nas camadas ocultas para mitigar problemas relacionados ao desvanecimento do gradiente. Na camada final de saída, a função \textit{sigmoid} é empregada para mapear a resposta no intervalo probabilístico $[0, 1]$.
+
+O ajuste dos pesos sinápticos ocorre minimizando a função de perda através do algoritmo de Retropropagação (\textit{Backpropagation}). Este método aplica a Regra da Cadeia do cálculo diferencial para computar as derivadas parciais da função de custo em relação a cada peso e \textit{bias} da rede, propagando os erros da camada de saída de volta até a camada de entrada para alimentar otimizadores baseados em gradiente estocástico.
+
+
+\end{document}
