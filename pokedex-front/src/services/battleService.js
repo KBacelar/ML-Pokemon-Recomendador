@@ -66,10 +66,9 @@ export async function fetchMatchups(pokemon, options = {}) {
       limit: options.limit ?? 20,
     });
     console.log('data', data);
-    return { ...data, source: 'backend' };
+    return { ...data, likelyWins: data?.likelyWins?.sort((a, b) => b.XP_Recompensa - a.XP_Recompensa), source: 'backend' };
   } catch (err) {
     console.warn('[battleService] backend indisponível, usando mock:', err.message);
     return [];
-  //   return mockMatchups(pokemon, options);
   }
 }
