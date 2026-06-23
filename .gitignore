@@ -36,3 +36,7 @@ pnpm-debug.log*
 *.sw?
 
 # Resultados da Avaliação agora são versionados para documentação
+
+# Arquivos pessoais de redação/anotação (não versionar)
+avaliacao/relatorio_minha_parte.txt
+avaliacao/resumo_avaliacao.txt

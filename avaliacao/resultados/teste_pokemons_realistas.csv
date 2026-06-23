@@ -1,0 +1,31 @@
+Pokémon,Arquétipo,Vantagem_P1,Vantagem_P2,RF_Vitoria,RF_Confianca,LR_Vitoria,LR_Confianca,NN_Vitoria,NN_Confianca,Concordancia
+Tanque-01 (Neutro),Tanque,1.0,1.0,NÃO,43.4%,SIM,83.9%,SIM,99.3%,PARCIAL
+Tanque-02 (Vant. 2x),Tanque,2.0,1.0,SIM,89.0%,SIM,100.0%,SIM,100.0%,TOTAL
+Tanque-03 (Desvant.),Tanque,0.5,2.0,NÃO,13.8%,NÃO,0.0%,NÃO,0.0%,TOTAL
+Tanque-04 (Dupla Vant.),Tanque,4.0,0.5,SIM,95.0%,SIM,100.0%,SIM,100.0%,TOTAL
+Tanque-05 (Imunidade Of.),Tanque,1.0,0.0,SIM,83.4%,SIM,100.0%,SIM,100.0%,TOTAL
+SweeperFis-01 (Neutro),Sweeper Físico,1.0,1.0,NÃO,43.6%,SIM,85.6%,SIM,99.3%,PARCIAL
+SweeperFis-02 (Vant. 2x),Sweeper Físico,2.0,1.0,SIM,86.8%,SIM,100.0%,SIM,100.0%,TOTAL
+SweeperFis-03 (Desvant.),Sweeper Físico,1.0,2.0,NÃO,9.7%,NÃO,0.8%,NÃO,0.0%,TOTAL
+SweeperFis-04 (Dupla Desv.),Sweeper Físico,0.5,2.0,NÃO,5.2%,NÃO,0.0%,NÃO,0.0%,TOTAL
+SweeperFis-05 (Vant. Forte),Sweeper Físico,2.0,0.5,SIM,97.4%,SIM,100.0%,SIM,100.0%,TOTAL
+SweeperEsp-01 (Neutro),Sweeper Especial,1.0,1.0,NÃO,7.5%,NÃO,4.0%,NÃO,0.0%,TOTAL
+SweeperEsp-02 (Vant. 2x),Sweeper Especial,2.0,1.0,SIM,60.9%,SIM,96.8%,SIM,100.0%,TOTAL
+SweeperEsp-03 (Desvant.),Sweeper Especial,1.0,2.0,NÃO,3.5%,NÃO,0.0%,NÃO,0.0%,TOTAL
+SweeperEsp-04 (Vant. Forte),Sweeper Especial,4.0,0.5,SIM,90.0%,SIM,100.0%,SIM,100.0%,TOTAL
+SweeperEsp-05 (Neutro),Sweeper Especial,1.0,1.0,NÃO,6.1%,NÃO,3.2%,NÃO,0.0%,TOTAL
+Balanceado-01 (Neutro),Balanceado,1.0,1.0,NÃO,44.8%,SIM,51.9%,NÃO,49.8%,PARCIAL
+Balanceado-02 (Vant. 2x),Balanceado,2.0,1.0,SIM,93.3%,SIM,99.9%,SIM,100.0%,TOTAL
+Balanceado-03 (Desvant.),Balanceado,1.0,2.0,NÃO,11.8%,NÃO,0.1%,NÃO,0.0%,TOTAL
+Balanceado-04 (Dupla Vant.),Balanceado,2.0,0.5,SIM,98.1%,SIM,100.0%,SIM,100.0%,TOTAL
+Balanceado-05 (Dupla Desv.),Balanceado,0.5,2.0,NÃO,6.2%,NÃO,0.0%,NÃO,0.0%,TOTAL
+Hibrido-01 (Neutro),Híbrido,1.0,1.0,SIM,82.1%,SIM,92.7%,SIM,100.0%,TOTAL
+Hibrido-02 (Vant. 2x),Híbrido,2.0,1.0,SIM,97.1%,SIM,100.0%,SIM,100.0%,TOTAL
+Hibrido-03 (Desvant.),Híbrido,1.0,2.0,NÃO,12.7%,NÃO,1.3%,NÃO,0.0%,TOTAL
+Hibrido-04 (Vant. Forte),Híbrido,4.0,1.0,SIM,95.3%,SIM,100.0%,SIM,100.0%,TOTAL
+Hibrido-05 (Dupla Desv.),Híbrido,0.5,4.0,NÃO,5.1%,NÃO,0.0%,NÃO,0.0%,TOTAL
+Lendario-01 (Stats P90),Lendário,1.0,1.0,SIM,95.8%,SIM,100.0%,SIM,100.0%,TOTAL
+Lendario-02 (P90+Vant.),Lendário,2.0,0.5,SIM,99.6%,SIM,100.0%,SIM,100.0%,TOTAL
+Lendario-03 (P90+Desv.),Lendário,0.5,2.0,NÃO,18.2%,NÃO,32.5%,NÃO,0.0%,TOTAL
+Subpar-01 (Stats P10),Subpar,1.0,1.0,NÃO,1.6%,NÃO,0.2%,NÃO,0.0%,TOTAL
+Subpar-02 (P10+Vant. Forte),Subpar,4.0,0.5,SIM,83.1%,SIM,100.0%,SIM,100.0%,TOTAL

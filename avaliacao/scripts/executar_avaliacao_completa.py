@@ -28,6 +28,7 @@ if faltando:
 
 executar('avaliacao_modelos.py')
 executar('teste_pokemon_novo.py')
+executar('teste_pokemons_realistas.py')
 executar('gerar_relatorio.py')
 
 print("\nAvaliação concluída. Resultados em avaliacao/resultados/")

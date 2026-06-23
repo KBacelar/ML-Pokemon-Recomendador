@@ -14,7 +14,10 @@ arquivos_necessarios = [
     '../resultados/matrizes_confusao.png',
     '../resultados/comparacao_modelos.png',
     '../resultados/teste_pokemons_novos.csv',
-    '../resultados/teste_pokemons_confianca.png'
+    '../resultados/teste_pokemons_confianca.png',
+    '../resultados/teste_pokemons_realistas.csv',
+    '../resultados/teste_pokemons_realistas_confianca.png',
+    '../resultados/teste_pokemons_realistas_concordancia.png'
 ]
 
 faltando = [a for a in arquivos_necessarios if not os.path.exists(a)]
@@ -26,6 +29,7 @@ if faltando:
 
 df_avaliacao = pd.read_csv('../resultados/resultados_avaliacao.csv')
 df_testes_novos = pd.read_csv('../resultados/teste_pokemons_novos.csv')
+df_testes_realistas = pd.read_csv('../resultados/teste_pokemons_realistas.csv')
 
 # Codificar imagens em base64 para embutir no HTML
 def image_to_base64(image_path):
@@ -35,6 +39,13 @@ def image_to_base64(image_path):
 img_matrizes = image_to_base64('../resultados/matrizes_confusao.png')
 img_comparacao = image_to_base64('../resultados/comparacao_modelos.png')
 img_confianca = image_to_base64('../resultados/teste_pokemons_confianca.png')
+img_realistas_conf = image_to_base64('../resultados/teste_pokemons_realistas_confianca.png')
+img_realistas_conc = image_to_base64('../resultados/teste_pokemons_realistas_concordancia.png')
+
+# Estatísticas agregadas dos 30 Pokémons realistas
+total_realistas = len(df_testes_realistas)
+concordancia_total_realistas = int((df_testes_realistas['Concordancia'] == 'TOTAL').sum())
+taxa_concordancia_realistas = concordancia_total_realistas / total_realistas * 100
 
 # Score geral por modelo = média das duas métricas
 scores_gerais = {}
@@ -65,7 +76,7 @@ for modelo in df_avaliacao['Modelo'].unique():
             <td>±{row['Desvio Padrão']:.4f}</td>
         </tr>"""
 
-# Linhas da tabela de testes sintéticos
+# Linhas da tabela de testes sintéticos extremos
 tabela_testes = ""
 for _, row in df_testes_novos.iterrows():
     tabela_testes += f"""
@@ -74,6 +85,21 @@ for _, row in df_testes_novos.iterrows():
                 <td>{row['RF_Vitoria']} ({row['RF_Confianca']})</td>
                 <td>{row['LR_Vitoria']} ({row['LR_Confianca']})</td>
                 <td>{row['NN_Vitoria']} ({row['NN_Confianca']})</td>
+            </tr>"""
+
+# Linhas da tabela de testes sintéticos realistas (30 perfis)
+tabela_realistas = ""
+for _, row in df_testes_realistas.iterrows():
+    concord_class = 'concord-total' if row['Concordancia'] == 'TOTAL' else 'concord-parcial'
+    tabela_realistas += f"""
+            <tr class="{concord_class}">
+                <td><strong>{row['Pokémon']}</strong></td>
+                <td>{row['Arquétipo']}</td>
+                <td>{row['Vantagem_P1']:.2f} / {row['Vantagem_P2']:.2f}</td>
+                <td>{row['RF_Vitoria']} ({row['RF_Confianca']})</td>
+                <td>{row['LR_Vitoria']} ({row['LR_Confianca']})</td>
+                <td>{row['NN_Vitoria']} ({row['NN_Confianca']})</td>
+                <td>{row['Concordancia']}</td>
             </tr>"""
 
 # Template HTML com estilo alinhado ao front-end React (cores e fontes)
@@ -143,6 +169,16 @@ html_content = f"""<!DOCTYPE html>
         td {{ padding: 10px 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }}
         tr:hover {{ background: rgba(255, 255, 255, 0.05); }}
         .best-model {{ background: rgba(0, 255, 100, 0.1) !important; border-left: 4px solid #0f0; }}
+        .concord-total {{ background: rgba(0, 200, 100, 0.06); }}
+        .concord-parcial {{ background: rgba(255, 180, 0, 0.10); border-left: 3px solid #ffb400; }}
+        .highlight-box {{
+            background: rgba(255, 180, 0, 0.08);
+            border-left: 4px solid #ffb400;
+            padding: 16px 20px;
+            margin: 15px 0;
+            border-radius: 5px;
+            line-height: 1.6;
+        }}
         .metric-cards {{
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -209,7 +245,8 @@ html_content = f"""<!DOCTYPE html>
                     <li>Validação cruzada Stratified K-Fold (k=5)</li>
                     <li>Métricas: Precision e Recall</li>
                     <li>Modelos avaliados: Random Forest, Regressão Logística e Rede Neural (MLP)</li>
-                    <li>Teste adicional com 5 Pokémons sintéticos para análise de robustez</li>
+                    <li>Teste de extremos com 5 Pokémons sintéticos</li>
+                    <li>Teste ampliado com 30 Pokémons sintéticos realistas baseados nos percentis do dataset</li>
                 </ul>
             </div>
 
@@ -279,24 +316,54 @@ html_content = f"""<!DOCTYPE html>
         </div>
 
         <div class="section">
-            <h2>5. Análise dos Resultados</h2>
+            <h2>5. Teste Ampliado com 30 Pokémons Sintéticos Realistas</h2>
+            <p>Para complementar o teste de extremos, foi conduzida uma avaliação ampliada com 30 perfis sintéticos cujos atributos foram amostrados dentro dos percentis observados no dataset real de batalhas (P10 a P90). Os perfis foram organizados em seis arquétipos canônicos de combate (Tanque, Sweeper Físico, Sweeper Especial, Balanceado, Híbrido, Lendário/Subpar) e contemplam diversas combinações de vantagem de tipo (neutra, 2x, 0.5x, 4x, 0x).</p>
+            <p>O oponente padrão foi fixado nos valores medianos do dataset (HP=344, Atk=284, Def=262, SpAtk=251, SpDef=262, Speed=256), assegurando que a comparação ocorra em região de alta densidade amostral.</p>
 
-            <h3>5.1. Comparação entre os modelos</h3>
+            <div class="highlight-box">
+                <strong>Resultado agregado:</strong> {concordancia_total_realistas} de {total_realistas} perfis ({taxa_concordancia_realistas:.1f}%) apresentaram concordância total entre os três classificadores. Os casos de discordância concentraram-se em cenários de vantagem de tipo neutra (1.0 / 1.0), onde a decisão depende exclusivamente do equilíbrio estatístico entre os atributos brutos.
+            </div>
+
+            <h3>5.1. Distribuição de confiança por perfil</h3>
+            <div class="image-container">
+                <img src="data:image/png;base64,{img_realistas_conf}" alt="Confiança em 30 Pokémons Sintéticos Realistas">
+            </div>
+
+            <h3>5.2. Concordância entre modelos por arquétipo</h3>
+            <div class="image-container">
+                <img src="data:image/png;base64,{img_realistas_conc}" alt="Concordância por Arquétipo">
+            </div>
+
+            <h3>5.3. Tabela detalhada das predições</h3>
+            <table>
+                <thead>
+                    <tr><th>Pokémon</th><th>Arquétipo</th><th>Vant. P1 / P2</th><th>Random Forest</th><th>Regressão Logística</th><th>Rede Neural</th><th>Concordância</th></tr>
+                </thead>
+                <tbody>{tabela_realistas}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>6. Análise dos Resultados</h2>
+
+            <h3>6.1. Comparação entre os modelos</h3>
             <ul>
                 <li><strong>Rede Neural (MLP)</strong> obteve o melhor desempenho geral: Precision {metrica('Rede Neural', 'Precision'):.4f} e Recall {metrica('Rede Neural', 'Recall'):.4f}. Apresentou também o menor desvio padrão, indicando estabilidade entre os folds.</li>
                 <li><strong>Regressão Logística</strong> ficou em segundo lugar (Precision {metrica('Regressão Logística', 'Precision'):.4f}, Recall {metrica('Regressão Logística', 'Recall'):.4f}). O bom desempenho de um modelo linear indica forte componente linear na relação entre features e resultado.</li>
                 <li><strong>Random Forest</strong> obteve resultados ligeiramente inferiores (Precision {metrica('Random Forest', 'Precision'):.4f}, Recall {metrica('Random Forest', 'Recall'):.4f}), embora ofereça maior interpretabilidade por permitir a análise de importância de features.</li>
             </ul>
 
-            <h3>5.2. Sobre a metodologia (Stratified K-Fold)</h3>
+            <h3>6.2. Sobre a metodologia (Stratified K-Fold)</h3>
             <p>O dataset foi dividido em 5 partições estratificadas, preservando a proporção entre vitórias e derrotas. Cada modelo foi treinado e testado 5 vezes, alternando os folds de teste. As métricas reportadas correspondem à média e ao desvio padrão dessas 5 execuções, reduzindo o viés de uma única divisão treino/teste.</p>
             <p>Todos os modelos apresentaram desvio padrão inferior a 0,01, o que indica resultados estáveis em diferentes partições dos dados.</p>
 
-            <h3>5.3. Robustez em dados sintéticos</h3>
+            <h3>6.3. Robustez em dados sintéticos</h3>
             <ul>
-                <li>Os três modelos concordaram em 100% das predições nos cinco perfis testados.</li>
-                <li>A confiança das predições é coerente com os perfis dos Pokémons (alta para perfis fortes, baixa para o perfil fraco).</li>
-                <li>A Rede Neural apresentou confiança próxima de 100% nos perfis vencedores, enquanto o Random Forest mostrou-se mais conservador.</li>
+                <li>Nos cinco perfis extremos, os três modelos concordaram em 100% das predições, com confianças coerentes com os perfis dos Pokémons.</li>
+                <li>Nos 30 perfis realistas, a concordância total alcançou {taxa_concordancia_realistas:.1f}%. As divergências concentraram-se em cenários de tipo neutro, onde a decisão depende apenas do equilíbrio estatístico dos atributos.</li>
+                <li>A Rede Neural manteve calibração próxima a 100% nos perfis vencedores e 0% nos perdedores; o Random Forest exibiu comportamento mais conservador; a Regressão Logística posicionou-se entre os dois.</li>
+                <li>O sinal de vantagem de tipo mostrou-se determinante para concordância: cenários com vantagem 2x ou 4x produziram convergência integral entre os modelos.</li>
             </ul>
 
             <div class="conclusion">
@@ -316,40 +383,5 @@ html_content = f"""<!DOCTYPE html>
 with open('../resultados/relatorio_completo.html', 'w', encoding='utf-8') as f:
     f.write(html_content)
 
-# Resumo em texto puro para referência rápida
-resumo_txt = f"""RELATÓRIO DE AVALIAÇÃO - ML POKÉMON
-Gerado em {datetime.now().strftime('%d/%m/%Y às %H:%M')}
-
-METODOLOGIA
------------
-- Validação Cruzada: Stratified K-Fold (k=5)
-- Métricas: Precision, Recall
-- Modelos: Random Forest, Regressão Logística, Rede Neural
-- Testes adicionais: 5 Pokémons sintéticos
-
-MELHORES MODELOS POR MÉTRICA
-----------------------------
-Precision: {melhor_precision['Modelo']} ({melhor_precision['Média']:.4f} ± {melhor_precision['Desvio Padrão']:.4f})
-Recall:    {melhor_recall['Modelo']} ({melhor_recall['Média']:.4f} ± {melhor_recall['Desvio Padrão']:.4f})
-
-MELHOR MODELO GERAL
--------------------
-{melhor_modelo_geral}
-
-ARQUIVOS GERADOS
-----------------
-- relatorio_completo.html
-- resumo_avaliacao.txt
-- resultados_avaliacao.csv
-- teste_pokemons_novos.csv
-- matrizes_confusao.png
-- comparacao_modelos.png
-- teste_pokemons_confianca.png
-"""
-
-with open('../resultados/resumo_avaliacao.txt', 'w', encoding='utf-8') as f:
-    f.write(resumo_txt)
-
 print("Arquivos gerados em avaliacao/resultados/:")
 print("  - relatorio_completo.html")
-print("  - resumo_avaliacao.txt")
