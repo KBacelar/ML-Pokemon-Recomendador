@@ -63,7 +63,7 @@ export async function fetchMatchups(pokemon, options = {}) {
     const { data } = await backendApi.post('/battle/matchups', {
       pokemon: { name: pokemon.name },
       minWinRate: options.minWinRate ?? 50,
-      limit: options.limit ?? 20,
+      limit: options.limit ?? 500
     });
     console.log('data', data);
     return { ...data, likelyWins: data?.likelyWins?.sort((a, b) => b.XP_Recompensa - a.XP_Recompensa), source: 'backend' };

@@ -36,8 +36,8 @@ def battle_matchups():
     # Recebe os dados vindos do front-end
     dados = request.get_json()
     nome_pokemon = dados.get('pokemon', {}).get('name')
-    min_win_rate = dados.get('minWinRate', 50) / 100.0
-    limit = dados.get('limit', 20)
+    min_win_rate = dados.get('minWinRate', 50) 
+    limit = dados.get('limit', 500)
 
     df_pk = limpar_dados_pokemon()
     nome_pokemon = nome_pokemon.title()
@@ -97,7 +97,7 @@ def battle_matchups():
         
     df_resultados = pd.DataFrame(lista_predicoes)
 
-    df_seguro = df_resultados[df_resultados['Chance_RF'] >= 0.85]
+    df_seguro = df_resultados[(df_resultados['Chance_RF'] >= min_win_rate) & (df_resultados['Chance_LR'] >= min_win_rate) & (df_resultados['Chance_NN'] >= min_win_rate)]
 
     
     df_ranking = df_seguro.sort_values(by='Chance_RF', ascending=False).head(limit)
