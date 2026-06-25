@@ -97,7 +97,7 @@ def battle_matchups():
         
     df_resultados = pd.DataFrame(lista_predicoes)
 
-    df_seguro = df_resultados[df_resultados['Chance_RF'] >= 0.85]
+    df_seguro = df_resultados[df_resultados['Chance_RF'] >= min_win_rate]
 
     
     df_ranking = df_seguro.sort_values(by='Chance_RF', ascending=False).head(limit)

@@ -32,6 +32,9 @@ export default function BattleSlot({
 
   const color = getTypeColor(pokemon.types[0]);
 
+  const getImgSrc = (name) =>
+  `${process.env.REACT_APP_BACKEND_URL}/dados/pokemon_img/${name}.png`;
+  
   return (
     <div
       className={`battle-slot battle-slot--${side} ${
@@ -59,7 +62,7 @@ export default function BattleSlot({
       <div className="battle-slot__arena">
         <div className="battle-slot__shadow" />
         <img
-          src={pokemon.image}
+          src={getImgSrc(pokemon.name)}
           alt={pokemon.name}
           className="battle-slot__sprite"
         />

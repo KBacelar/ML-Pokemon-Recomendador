@@ -95,6 +95,9 @@ with open('modelos_treinados/scaler.pkl', 'wb') as f:
 with open('modelos_treinados/colunas_X.pkl', 'wb') as f:
     pickle.dump(X.columns, f)
 
+with open('modelos_treinados/train_test_data.npz', 'wb') as f:
+    np.savez(f, X_train=X_train.values, y_train=y_train.values, X_test=X_test.values, y_test=y_test.values)
+
 print("Todos os modelos foram persistidos com sucesso na pasta 'modelos_treinados'!")
 
 
