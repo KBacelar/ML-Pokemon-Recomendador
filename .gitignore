@@ -3,8 +3,13 @@ __pycache__/
 .ipynb_checkpoints/
 *.pyc
 venv/
+venv_py39_old/
 env/
 .env
+
+# Backups locais (não versionados)
+*.bak/
+*.bak
 
 # Node / Front-end
 node_modules/
@@ -34,3 +39,5 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+

@@ -12,5 +12,5 @@ export const pokeApi = axios.create({
 
 export const backendApi = axios.create({
   baseURL: BACKEND_BASE,
-  timeout: 10000,
+  timeout: 9999999999999999999,
 });

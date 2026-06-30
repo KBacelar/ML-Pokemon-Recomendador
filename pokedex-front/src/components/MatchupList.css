@@ -135,8 +135,28 @@
   flex-direction: column;
   gap: 6px;
   min-width: 0;
+  
+}
+.matchup__info__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.matchup__info__opponent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
+.matchup__info__xp {
+  font-size: 1rem;
+  font-weight: 700;
+  background: azure;
+    color: black;
+    padding: 5px;
+    border-radius: 5px;
+}
 .matchup__top {
   display: flex;
   justify-content: space-between;
@@ -202,16 +222,27 @@
   background: linear-gradient(90deg, #7f8c8d, #95a5a6);
 }
 
+.matchup__models-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-shadow: 0 1px 2px #000;
+  letter-spacing: 0.5px;
+  padding:  10px;
+}
 .matchup__bar-text {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   font-size: 0.7rem;
   font-weight: 700;
   text-shadow: 0 1px 2px #000;
   letter-spacing: 0.5px;
+  padding: 0 10px;
 }
 
 .matchup__power {

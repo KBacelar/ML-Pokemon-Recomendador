@@ -1,7 +1,8 @@
-import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
-import BattleField from './pages/BattleField';
-import Pokedex from './pages/Pokedex';
-import './App.css';
+import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
+import BattleField from "./pages/BattleField";
+import Pokedex from "./pages/Pokedex";
+import "./App.css";
+import Shap from "./pages/Shap";
 
 export default function App() {
   return (
@@ -16,15 +17,27 @@ export default function App() {
             <NavLink
               to="/"
               end
-              className={({ isActive }) => `app__link ${isActive ? 'app__link--active' : ''}`}
+              className={({ isActive }) =>
+                `app__link ${isActive ? "app__link--active" : ""}`
+              }
             >
               Campo de Batalha
             </NavLink>
             <NavLink
               to="/pokedex"
-              className={({ isActive }) => `app__link ${isActive ? 'app__link--active' : ''}`}
+              className={({ isActive }) =>
+                `app__link ${isActive ? "app__link--active" : ""}`
+              }
             >
               Pokédex
+            </NavLink>
+            <NavLink
+              to="/shap"
+              className={({ isActive }) =>
+                `app__link ${isActive ? "app__link--active" : ""}`
+              }
+            >
+              Análise SHAP
             </NavLink>
           </div>
         </nav>
@@ -33,11 +46,12 @@ export default function App() {
           <Routes>
             <Route path="/" element={<BattleField />} />
             <Route path="/pokedex" element={<Pokedex />} />
+            <Route path="/shap" element={<Shap />} />
           </Routes>
         </main>
 
         <footer className="app__footer">
-          Dados de Pokémon via PokéAPI · Comparação de forças via backend (em desenvolvimento)
+          Dados de Pokémon via PokéAPI · Comparação de forças via backend
         </footer>
       </div>
     </BrowserRouter>
