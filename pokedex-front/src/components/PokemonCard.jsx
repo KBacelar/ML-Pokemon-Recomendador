@@ -6,6 +6,9 @@ export default function PokemonCard({ pokemon, onClick, selected, compact = fals
 
   const primaryColor = getTypeColor(pokemon.types[0]);
 
+  const getImgSrc = (name) =>
+  `${process.env.REACT_APP_BACKEND_URL}/dados/pokemon_img/${name}.png`;
+
   return (
     <button
       type="button"
@@ -18,7 +21,8 @@ export default function PokemonCard({ pokemon, onClick, selected, compact = fals
       <div className="pokemon-card__id">#{String(pokemon.id).padStart(3, '0')}</div>
       <div className="pokemon-card__image-wrap">
         <img
-          src={pokemon.image}
+          //src={pokemon.image} 
+          src={getImgSrc(pokemon.name)}
           alt={pokemon.name}
           className="pokemon-card__image"
           loading="lazy"
