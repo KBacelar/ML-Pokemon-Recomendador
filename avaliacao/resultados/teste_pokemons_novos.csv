@@ -1,0 +1,6 @@
+Pokémon,RF_Vitoria,RF_Confianca,LR_Vitoria,LR_Confianca,NN_Vitoria,NN_Confianca
+TankBot (Defensor Extremo),SIM,74.8%,SIM,99.7%,SIM,100.0%
+SpeedDemon (Atacante Veloz),NÃO,48.7%,SIM,90.3%,SIM,100.0%
+AllRounder (Equilibrado),NÃO,47.5%,SIM,88.7%,SIM,100.0%
+Weakling (Muito Fraco),NÃO,47.5%,NÃO,1.0%,NÃO,0.0%
+TypeMaster (Vantagem de Tipo 2x),SIM,73.2%,SIM,100.0%,SIM,100.0%
